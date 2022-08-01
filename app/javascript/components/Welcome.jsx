@@ -1,19 +1,22 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import PropTypes from "prop-types"
 import {Calendar, Alert, Layout, Col, Row, Button, List} from 'antd';
 import 'antd/dist/antd.css';
 import moment from 'moment';
-
+import  { CreateSubscription } from '../channels/booking_channel'
 const {Content} = Layout;
 
 const Welcome = ({}) => {
     const [value, setValue] = useState(moment('2017-01-25'));
     const [selectedValue, setSelectedValue] = useState(moment('2017-01-25'));
-    const data = ['11:00', '12:00']
+    const [ timeSlots, setTimeSlots ]  = useState([]);
+    const subscription = CreateSubscription((data)=>{ setTimeSlots(data); console.log('nice', data)})
+
 
     const onSelect = (newValue) => {
         setValue(newValue);
         setSelectedValue(newValue);
+        subscription.send({date: newValue})
     };
 
     const onPanelChange = (newValue) => {
@@ -37,7 +40,7 @@ const Welcome = ({}) => {
                         </div>
                     </Col>
                     <Col span={8}>
-                        <List dataSource={data} style={{padding: '5px'}}
+                        <List dataSource={timeSlots} style={{padding: '5px'}}
                               renderItem={(item) => <List.Item style={{padding: '1px 0'}}> <Button
                                   style={{width: '100%'}}>{item} </Button>
                               </List.Item>}/>
