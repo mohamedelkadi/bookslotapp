@@ -10,7 +10,7 @@ class BookingChannel < ApplicationCable::Channel
 
   def receive(data)
     puts "received: #{data} "
-    date = data['date']&.to_date
+    date = data['day']&.to_date
     date&.day < 15 ? broadcast_to(self , %w[8:00 9:00]) : broadcast_to(self , %w[11:00 12:00])
   end
 end
