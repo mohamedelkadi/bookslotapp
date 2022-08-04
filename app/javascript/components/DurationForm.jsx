@@ -10,7 +10,7 @@ import {
 
 const {Option} = Select;
 const HOURS = ['00', '01', '03', '04', '05', '06', '07']
-const MINUTES = ['00', '15', '30', '45']
+const MINUTES = ['00', '10', '15', '20', '25', '30', '35', '45', '50', '55']
 
 const DurationForm = ({onSubmit}) => {
     const [form] = Form.useForm();
