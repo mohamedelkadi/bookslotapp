@@ -1,4 +1,4 @@
-class ListAvailableSlotService
+class FindAvailableTimeService
 
   def initialize(booked_slots:, duration:)
     @booked_slots = booked_slots

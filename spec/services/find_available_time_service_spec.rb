@@ -1,14 +1,7 @@
 require 'rails_helper'
 
 describe 'ListAvailableSlotService' do
-  subject { ListAvailableSlotService.new(booked_slots: day_slots, duration: duration).call }
-
-  # helper methods
-  def create_day_slot(time_start, time_end)
-    { "id": SecureRandom.uuid,
-      "start": "#{day}T#{time_start}:00.000Z",
-      "end": "#{day}T#{time_end}:00.000Z" }
-  end
+  subject { FindAvailableTimeService.new(booked_slots: day_slots, duration: duration).call }
 
   let(:duration) { 15 }
   let(:day) { '2022-02-01' }
@@ -55,8 +48,8 @@ describe 'ListAvailableSlotService' do
         ]
       end
 
-      it { is_expected.to match_array([["#{day}T08:00:00.000Z".to_time,
-                                        "#{day}T09:30:00.000Z".to_time]]) }
+      it { is_expected.to match_array([[create_time(day, '08:00'),
+                                        create_time(day, '09:30')]]) }
     end
 
     context 'available range in the beginning' do
@@ -68,8 +61,8 @@ describe 'ListAvailableSlotService' do
         ]
       end
 
-      it { is_expected.to match_array([["#{day}T00:00:00.000Z".to_time,
-                                        "#{day}T02:00:00.000Z".to_time]]) }
+      it { is_expected.to match_array([[create_time(day, '00:00'),
+                                        create_time(day, '02:00')]]) }
     end
 
     context 'available range in the end' do
@@ -81,8 +74,8 @@ describe 'ListAvailableSlotService' do
         ]
       end
 
-      it { is_expected.to match_array([["#{day}T22:00:00.000Z".to_time,
-                                        "#{day}T23:59:59.999999999Z".to_time]]) }
+      it { is_expected.to match_array([[create_time(day, '22:00'),
+                                        create_time(day, '23:59', '59.999999999Z')]]) }
     end
   end
 
@@ -97,12 +90,9 @@ describe 'ListAvailableSlotService' do
       ]
     end
 
-    it { is_expected.to match_array([["#{day}T00:00:00.000Z".to_time,
-                                      "#{day}T01:00:00.000Z".to_time],
-                                     ["#{day}T08:00:00.000Z".to_time,
-                                      "#{day}T09:00:00.000Z".to_time],
-                                     ["#{day}T14:30:00.000Z".to_time,
-                                      "#{day}T16:00:00.000Z".to_time]
+    it { is_expected.to match_array([[create_time(day, '00:00'), create_time(day, '01:00')],
+                                     [create_time(day, '08:00'), create_time(day, '09:00')],
+                                     [create_time(day, '14:30'), create_time(day, '16:00')]
                                     ]) }
   end
 
