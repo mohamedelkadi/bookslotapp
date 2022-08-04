@@ -1,14 +1,16 @@
 class TimeRangeToSlotsService
   def initialize(range, step: 15.minutes)
     @range = range
+    @step = step
   end
 
   def call
     slots = []
+    return [] if too_short_range?
     time = range_start
     while time <= range_end do
       slots << time.strftime('%H:%M')
-      time += 15.minutes
+      time += step
     end
 
     slots
@@ -24,6 +26,10 @@ class TimeRangeToSlotsService
     @range_end ||= range.last
   end
 
-  attr_reader :range
+  def too_short_range?
+    (range_end - range_start) < step
+  end
+
+  attr_reader :range, :step
 
 end
