@@ -1,9 +1,5 @@
 class BookedTimeSlot
-  def initialize(opts)
-    @id = opts[:id]
-    @start_time = opts[:start].to_time
-    @end_time = opts[:end].to_time
-  end
+
 
   attr_reader :id, :end_time, :start_time
 

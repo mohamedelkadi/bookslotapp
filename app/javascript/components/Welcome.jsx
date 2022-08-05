@@ -9,8 +9,8 @@ import DurationForm from './DurationForm'
 const {Content} = Layout;
 
 const Welcome = ({}) => {
-    const [value, setValue] = useState(moment('2017-01-25'));
-    const [selectedValue, setSelectedValue] = useState(moment('2017-01-25'));
+    const [value, setValue] = useState(moment());
+    const [selectedValue, setSelectedValue] = useState(moment());
     const [timeSlots, setTimeSlots] = useState([]);
     const subscription = CreateSubscription((data) => {
         setTimeSlots(data);
@@ -45,12 +45,19 @@ const Welcome = ({}) => {
                         </div>
                         <h2> Select duration </h2>
                         <div>
-                            <DurationForm onSubmit={(duration)=>(subscription.send({ type: 'submit' , duration: duration , day: selectedValue}))}/>
+                            <DurationForm onSubmit={(duration) => (subscription.send({
+                                type: 'request_slots',
+                                duration: duration,
+                                day: selectedValue
+                            }))}/>
                         </div>
                     </Col>
                     <Col span={12}>
                         <h2> Book your slot </h2>
-                        <List dataSource={timeSlots} style={{padding: '5px'}}
+                        <List dataSource={timeSlots} style={{
+                            padding: '5px', height: '460px',
+                            overflowY: 'scroll'
+                        }}
                               renderItem={(item) => <List.Item style={{padding: '1px 0'}}> <Button
                                   style={{width: '100%'}}>{item} </Button>
                               </List.Item>}/>

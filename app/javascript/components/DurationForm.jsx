@@ -20,12 +20,12 @@ const DurationForm = ({onSubmit}) => {
             onSubmit(values)
         }}>
 
-                    <Form.Item name="minutes" >
+                    <Form.Item name="hours" >
                         <Select defaultValue="00">
                             {HOURS.map((h) => <Option value={h}>{h} hours</Option>)}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="hours" >
+                    <Form.Item name="minutes" >
                         <Select defaultValue="00">
                             {MINUTES.map((m) => <Option value={m}>{m} minutes</Option>)}
                         </Select>
