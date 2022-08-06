@@ -15,12 +15,7 @@ class BookingChannel < ApplicationCable::Channel
 
     reply = case msg_type
             when 'request_slots'
-              day = data['day']&.to_date.to_s
-              duration = data['duration']['hours'].to_i * 60 + data['duration']['minutes'].to_i
-              result = FindAvailableSlots.new(day: day,
-                                              duration: duration).call
 
-              { type: 'request_slots_success', result: { slots: result, duration: duration }, duration: duration }
             when 'book_slot'
               day = data['day']&.to_date.to_s
               duration = data['duration'].to_i.minutes

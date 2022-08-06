@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 import moment from 'moment';
 import {CreateSubscription} from '../channels/booking_channel'
 import DurationForm from './DurationForm'
-
+import {getAvailableSlots} from '../api/api'
 const {Content} = Layout;
 
 const Welcome = ({}) => {
@@ -46,6 +46,13 @@ const Welcome = ({}) => {
         })
     }
 
+    const onDurationFormSubmit = async (duration) => {
+        const result = await getAvailableSlots({duration: JSON.stringify(duration), day: selectedValue});
+        const {data: {slots, durationInMinutes}} = result
+        setTimeSlots(slots);
+        setSlotDuration(durationInMinutes);
+    }
+
     return (
         <Layout>
             <h1> Slot booking </h1>
@@ -64,11 +71,7 @@ const Welcome = ({}) => {
                         </div>
                         <h2> Select duration </h2>
                         <div>
-                            <DurationForm onSubmit={(duration) => (subscription.send({
-                                type: 'request_slots',
-                                duration: duration,
-                                day: selectedValue
-                            }))}/>
+                            <DurationForm onSubmit={onDurationFormSubmit}/>
                         </div>
                     </Col>
                     <Col span={12}>
