@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 import moment from 'moment';
 import {CreateSubscription} from '../channels/booking_channel'
 import DurationForm from './DurationForm'
-import {getAvailableSlots} from '../api/api'
+import {getAvailableSlots, bookSlot} from '../api/api'
 const {Content} = Layout;
 
 const Welcome = ({}) => {
@@ -23,7 +23,6 @@ const Welcome = ({}) => {
                 setSlotDuration(result['duration']);
                 break;
             case 'book_slot_success':
-                setBookCompleted(true);
         }
     })
 
@@ -37,20 +36,23 @@ const Welcome = ({}) => {
         setValue(newValue);
     };
 
-    const onBookSlot = (item) => {
-        subscription.send({
-            type: 'book_slot',
+    const onBookSlot = async (item) => {
+
+        await bookSlot({
             slot: item,
             day: selectedValue,
             duration: slotDuration
         })
+
+        setBookCompleted(true);
     }
 
     const onDurationFormSubmit = async (duration) => {
         const result = await getAvailableSlots({duration: JSON.stringify(duration), day: selectedValue});
         const {data: {slots, durationInMinutes}} = result
-        setTimeSlots(slots);
         setSlotDuration(durationInMinutes);
+        setBookCompleted(false);
+        setTimeSlots(slots);
     }
 
     return (

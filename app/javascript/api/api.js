@@ -9,3 +9,8 @@ export const getAvailableSlots = async ({day, duration}) => {
     const response = await api.get(`/slots?day=${day}&duration=${duration}`)
     return response;
 }
+
+export const bookSlot = async ({day, duration, slot}) => {
+    const response = await api.post(`/slots/book`, {day, duration, slot})
+    return response;
+}
