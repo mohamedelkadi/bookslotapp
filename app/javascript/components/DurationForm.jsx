@@ -12,29 +12,32 @@ const {Option} = Select;
 const HOURS = ['00', '01', '2', '03', '04', '05', '06', '07']
 const MINUTES = ['00', '15', '30', '45']
 
-const DurationForm = ({onSubmit}) => {
+const DurationForm = ({onSubmit, syncCurrentDuration}) => {
     const [form] = Form.useForm();
 
+
     return (
-        <Form form={form} layout="inline" onFinish={(values) => {
-            onSubmit(values)
-        }}>
+        <Form form={form} layout="inline"
+              onValuesChange={(values) => syncCurrentDuration(values)}
+              onFinish={(values) => {
+                  onSubmit(values)
+              }}>
 
             <Form.Item name="hours">
-                        <Select defaultValue="00">
-                            {HOURS.map((h) => <Option value={h}>{h} hours</Option>)}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="minutes" >
-                        <Select defaultValue="00">
-                            {MINUTES.map((m) => <Option value={m}>{m} minutes</Option>)}
-                        </Select>
-                    </Form.Item>
+                <Select defaultValue="00">
+                    {HOURS.map((h) => <Option value={h}>{h} hours</Option>)}
+                </Select>
+            </Form.Item>
+            <Form.Item name="minutes">
+                <Select defaultValue="00">
+                    {MINUTES.map((m) => <Option value={m}>{m} minutes</Option>)}
+                </Select>
+            </Form.Item>
 
 
-                <Button type="primary" htmlType="submit">
-                    List available slots
-                </Button>
+            <Button type="primary" htmlType="submit">
+                List available slots
+            </Button>
         </Form>)
 }
 

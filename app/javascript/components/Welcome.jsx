@@ -1,9 +1,9 @@
-import React, { useState} from "react"
+import React, {useState, useEffect} from "react"
 import PropTypes from "prop-types"
-import {Calendar, Alert, Layout, Col, Row, Button, List} from 'antd';
+import {Calendar, Alert, Layout, Col, Row} from 'antd';
 import 'antd/dist/antd.css';
 import moment from 'moment';
-import {CreateSubscription} from '../channels/booking_channel'
+import {BookingChannel} from '../channels/booking_channel'
 import DurationForm from './DurationForm'
 import SlotBooking from './SlotBooking'
 import {getAvailableSlots, bookSlot} from '../api/api'
@@ -13,20 +13,29 @@ const Welcome = ({}) => {
     const [value, setValue] = useState(moment());
     const [selectedValue, setSelectedValue] = useState(moment());
     const [timeSlots, setTimeSlots] = useState([]);
-    const [slotDuration, setSlotDuration] = useState(null);
+    const [numericDuration, setNumericDuration] = useState(null);
+    const [currentDuration, setCurrentDuration] = useState(null);
     const [bookCompleted, setBookCompleted] = useState(false);
+    const uuid = Math.floor(Math.random() * 100);
+    const selectedDay = selectedValue.format('YYYY-MM-DD')
 
-    const subscription = CreateSubscription((data) => {
-        const {type, result} = data
-        switch (type) {
-            case 'request_slots_success':
-                setTimeSlots(result['slots']);
-                setSlotDuration(result['duration']);
-                break;
-            case 'book_slot_success':
+    useEffect(() => {
+        BookingChannel.received = (response) => {
+            const {data: {day, senderId}} = response
+            notifyByMsg(day, senderId)
         }
     })
 
+    const notifyByMsg = (day, senderId) => {
+        console.log(senderId, uuid, 'id')
+        if (uuid === senderId) {
+            return;
+        }
+
+        if (day === selectedDay) {
+            onDurationFormSubmit(currentDuration).catch();
+        }
+    }
 
     const onSelect = (newValue) => {
         setValue(newValue);
@@ -41,18 +50,19 @@ const Welcome = ({}) => {
 
         await bookSlot({
             slot: item,
-            day: selectedValue,
-            duration: slotDuration
+            day: selectedDay,
+            duration: numericDuration,
+            uuid: uuid,
         })
 
         setBookCompleted(true);
+
     }
 
     const onDurationFormSubmit = async (duration) => {
         const result = await getAvailableSlots({duration: duration, day: selectedValue});
         const {data: {slots, durationInMinutes}} = result
-        console.log('durationInMinutes',durationInMinutes)
-        setSlotDuration(durationInMinutes);
+        setNumericDuration(durationInMinutes);
         setBookCompleted(false);
         setTimeSlots(slots);
     }
@@ -75,7 +85,12 @@ const Welcome = ({}) => {
                         </div>
                         <h2> Select duration </h2>
                         <div>
-                            <DurationForm onSubmit={onDurationFormSubmit}/>
+                            <DurationForm onSubmit={onDurationFormSubmit}
+                                          syncCurrentDuration={(v) => {
+                                              console.log('syncxx', v)
+                                              setCurrentDuration({...currentDuration, ...v})
+                                              console.log('currnt', currentDuration)
+                                          }}/>
                         </div>
                     </Col>
                     <Col span={12}>

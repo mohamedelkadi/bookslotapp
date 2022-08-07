@@ -4,13 +4,14 @@ class BookSlotService
   end
 
   def call
+    $mem_storage[day] ||= []
     return [true, nil, nil] if conflict?
 
     slot_id = SecureRandom.uuid
 
-    $mem_storage[day] ||= []
-
     $mem_storage[day] << { id: slot_id.to_s, start: start_t.to_s, end: end_t.to_s }.with_indifferent_access
+
+    ActionCable.server.broadcast('global', { type: 'slot_booked', data: { day: day, senderId: book_params['uuid'] } })
 
     [false, slot_id, day]
   end
@@ -53,6 +54,6 @@ class BookSlotService
   end
 
   def day
-    @day ||= book_params['day']&.to_date.to_s
+    @day ||= book_params['day']
   end
 end

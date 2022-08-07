@@ -28,7 +28,7 @@ module Api
     end
 
     def book_params
-      params.permit([:day, :duration, :slot])
+      params.permit([:day, :duration, :slot, :uuid])
     end
   end
 end
