@@ -5,6 +5,9 @@ https://slot-booking-2022.herokuapp.com/
 and use https://slot-booking-2022.herokuapp.com/debug to see the booked time 
 
 ### Important files 
+channels 
+
+<img width="544" alt="image" src="https://user-images.githubusercontent.com/17525354/183315364-c5c70c27-0c47-4272-bb01-2fd93d7f8158.png">
 
 services 
 
