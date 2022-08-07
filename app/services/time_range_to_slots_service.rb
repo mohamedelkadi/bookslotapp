@@ -2,7 +2,7 @@ class TimeRangeToSlotsService
   def initialize(range, duration, step: 15.minutes)
     @range = range
     @step = step
-    @duration = duration
+    @duration = duration - 1.second
   end
 
   def call

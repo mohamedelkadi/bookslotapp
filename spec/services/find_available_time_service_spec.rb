@@ -49,7 +49,9 @@ describe 'ListAvailableSlotService' do
       end
 
       it { is_expected.to match_array([[create_time(day, '08:00'),
-                                        create_time(day, '09:30')]]) }
+                                        create_time(day, '09:30')],
+                                       [create_time(day, '23:00'),
+                                        create_time(day, '23:59', '59.999999999Z')]]) }
     end
 
     context 'available range in the beginning' do

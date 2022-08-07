@@ -1,0 +1,21 @@
+<h1>Debug page</h1>
+
+<% $mem_storage.each do |k, v| %>
+  <h3 style="width: 80%;margin: auto;border-spacing: 30px;">Day :<%= k %></h3>
+  <table style="width: 80%;margin: auto">
+    <tr>
+      <th> id</th>
+      <th> start</th>
+      <th> end</th>
+    </tr>
+    <% v.each do |s| %>
+      <tr>
+        <td> <%= s[:id] %> </td>
+        <td> <%= s[:start].to_time.strftime('%H:%M') %> </td>
+        <td> <%= s[:end].to_time.strftime('%H:%M') %> </td>
+      </tr>
+    <% end %>
+
+  </table>
+<% end %>
+

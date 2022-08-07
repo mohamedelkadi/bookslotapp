@@ -24,7 +24,7 @@ class FindAvailableTimeService
         prev, current = slot[:end], sorted_booked_slots[i + 1][:start]
       end
 
-      if ((current - prev) / 60) >= duration
+      if ((current - prev) / 60).ceil >= duration
         res << [prev, current]
       end
     end
