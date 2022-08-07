@@ -8,7 +8,7 @@ class FindAvailableSlots
     return all_day_slots if no_booked_slots?
 
     available_time_ranges.map do |range|
-      TimeRangeToSlotsService.new(range).call
+      TimeRangeToSlotsService.new(range, duration).call
     end.flatten
   end
 
@@ -23,7 +23,7 @@ class FindAvailableSlots
   end
 
   def all_day_slots
-    TimeRangeToSlotsService.new(all_day_range).call
+    TimeRangeToSlotsService.new(all_day_range, duration).call
   end
 
   def all_day_range

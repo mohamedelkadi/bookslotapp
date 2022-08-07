@@ -96,5 +96,22 @@ describe 'ListAvailableSlotService' do
                                     ]) }
   end
 
+  context 'when beginning of the day is booked' do
+    let(:duration) { 45 }
+
+    let(:day_slots) do
+      [
+        create_day_slot('00:00', '08:00'),
+        create_day_slot('01:00', '08:00'),
+        create_day_slot('09:00', '14:30'),
+        create_day_slot('16:00', '23:30'),
+      ]
+    end
+    it { is_expected.to match_array([
+                                     [create_time(day, '08:00'), create_time(day, '09:00')],
+                                     [create_time(day, '14:30'), create_time(day, '16:00')]
+                                    ]) }
+  end
+
 end
 

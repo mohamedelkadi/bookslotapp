@@ -12,7 +12,7 @@ const Welcome = ({}) => {
     const [value, setValue] = useState(moment());
     const [selectedValue, setSelectedValue] = useState(moment());
     const [timeSlots, setTimeSlots] = useState([]);
-    const [slotDuration, setSlotDuration] = useState([]);
+    const [slotDuration, setSlotDuration] = useState(null);
     const [bookCompleted, setBookCompleted] = useState(false);
 
     const subscription = CreateSubscription((data) => {
@@ -48,8 +48,9 @@ const Welcome = ({}) => {
     }
 
     const onDurationFormSubmit = async (duration) => {
-        const result = await getAvailableSlots({duration: JSON.stringify(duration), day: selectedValue});
+        const result = await getAvailableSlots({duration: duration, day: selectedValue});
         const {data: {slots, durationInMinutes}} = result
+        console.log('durationInMinutes',durationInMinutes)
         setSlotDuration(durationInMinutes);
         setBookCompleted(false);
         setTimeSlots(slots);

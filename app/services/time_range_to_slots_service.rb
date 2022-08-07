@@ -1,7 +1,8 @@
 class TimeRangeToSlotsService
-  def initialize(range, step: 15.minutes)
+  def initialize(range, duration, step: 15.minutes)
     @range = range
     @step = step
+    @duration = duration
   end
 
   def call
@@ -23,13 +24,13 @@ class TimeRangeToSlotsService
   end
 
   def range_end
-    @range_end ||= range.last
+    @range_end ||= range.last - duration.minutes
   end
 
   def too_short_range?
-    (range_end - range_start) < step
+    (range_end - range_start).negative?
   end
 
-  attr_reader :range, :step
+  attr_reader :range, :step, :duration
 
 end
