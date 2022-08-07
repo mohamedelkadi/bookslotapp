@@ -5,6 +5,7 @@ import 'antd/dist/antd.css';
 import moment from 'moment';
 import {CreateSubscription} from '../channels/booking_channel'
 import DurationForm from './DurationForm'
+import SlotBooking from './SlotBooking'
 import {getAvailableSlots, bookSlot} from '../api/api'
 const {Content} = Layout;
 
@@ -79,14 +80,7 @@ const Welcome = ({}) => {
                     </Col>
                     <Col span={12}>
                         <h2> Book your slot </h2>
-                        {bookCompleted ? <h3>  Booked successfully </h3> : (
-                            <List dataSource={timeSlots} style={{
-                                padding: '5px', height: '460px',
-                                overflowY: 'scroll'
-                            }}
-                                  renderItem={(item) => <List.Item style={{padding: '1px 0'}}>
-                                      <Button onClick={() => onBookSlot(item)} style={{width: '100%'}}>{item} </Button>
-                                  </List.Item>}/>)}
+                        <SlotBooking bookCompleted={bookCompleted} onBookSlot={onBookSlot} timeSlots={timeSlots}/>
                     </Col>
                 </Row>
             </Content>
