@@ -47,8 +47,6 @@ GEM
     activerecord (6.1.6.1)
       activemodel (= 6.1.6.1)
       activesupport (= 6.1.6.1)
-    activerecord-nulldb-adapter (0.8.0)
-      activerecord (>= 5.2.0, < 7.1)
     activestorage (6.1.6.1)
       actionpack (= 6.1.6.1)
       activejob (= 6.1.6.1)
@@ -241,7 +239,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activerecord-nulldb-adapter
   bootsnap (>= 1.4.4)
   byebug
   capybara (>= 3.26)
