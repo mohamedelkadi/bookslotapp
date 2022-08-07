@@ -1,5 +1,5 @@
 import axios from 'axios'
-const apiUrl = process.env.NODE_ENV === 'production' ? 'https://slot-booking-2022.herokuapp.com/' : 'localhost:300'
+const apiUrl = process.env.NODE_ENV === 'production' ? 'https://slot-booking-2022.herokuapp.com/' : 'http://localhost:3000'
 export const api = axios.create({
     baseURL: `${apiUrl}/api`,
     timeout: 1000,
