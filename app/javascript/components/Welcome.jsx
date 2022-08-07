@@ -7,7 +7,7 @@ import {BookingChannel} from '../channels/booking_channel'
 import DurationForm from './DurationForm'
 import SlotBooking from './SlotBooking'
 import {getAvailableSlots, bookSlot} from '../api/api'
-const {Content} = Layout;
+const {Content , Header , Footer} = Layout;
 
 const Welcome = ({}) => {
     const [value, setValue] = useState(moment());
@@ -69,11 +69,12 @@ const Welcome = ({}) => {
 
     return (
         <Layout>
+            <Header/>
             <h1> Slot booking </h1>
             <Content style={{
                 padding: 24,
                 margin: 0,
-                minHeight: 280,
+                minHeight: 620,
             }}>
                 <Row style={{width: '90%', margin: 'auto'}}>
                     <Col span={12}>
@@ -99,6 +100,8 @@ const Welcome = ({}) => {
                     </Col>
                 </Row>
             </Content>
+            <Footer>
+                @Tradelink test. to see the booked slots go to /debug </Footer>
         </Layout>);
 }
 
