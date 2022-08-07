@@ -1,7 +1,7 @@
 import axios from 'axios'
-
+const apiUrl = process.env.NODE_ENV === 'production' ? 'https://slot-booking-2022.herokuapp.com/' : 'localhost:300'
 export const api = axios.create({
-    baseURL: 'http://localhost:3000/api/',
+    baseURL: `${apiUrl}/api`,
     timeout: 1000,
     headers: {'Content-Type': 'application/json'}
 });
