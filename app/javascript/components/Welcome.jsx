@@ -1,111 +1,119 @@
-import React, {useState, useEffect} from "react"
-import PropTypes from "prop-types"
-import {Calendar, Alert, Layout, Col, Row} from 'antd';
+import React, { useState, useEffect } from 'react';
+import {
+  Calendar, Alert, Layout, Col, Row,
+} from 'antd';
 import 'antd/dist/antd.css';
 import moment from 'moment';
-import {BookingChannel} from '../channels/booking_channel'
-import DurationForm from './DurationForm'
-import SlotBooking from './SlotBooking'
-import {getAvailableSlots, bookSlot} from '../api/api'
-const {Content , Header , Footer} = Layout;
+import { BookingChannel } from '../channels/booking_channel';
+import DurationForm from './DurationForm';
+import SlotBooking from './SlotBooking';
+import { getAvailableSlots, bookSlot } from '../api/api';
 
-const Welcome = ({}) => {
-    const [value, setValue] = useState(moment());
-    const [selectedValue, setSelectedValue] = useState(moment());
-    const [timeSlots, setTimeSlots] = useState([]);
-    const [numericDuration, setNumericDuration] = useState(null);
-    const [currentDuration, setCurrentDuration] = useState(null);
-    const [bookCompleted, setBookCompleted] = useState(false);
-    const uuid = Math.floor(Math.random() * 100);
-    const selectedDay = selectedValue.format('YYYY-MM-DD')
+const { Content, Header, Footer } = Layout;
 
-    useEffect(() => {
-        BookingChannel.received = (response) => {
-            const {data: {day, senderId}} = response
-            notifyByMsg(day, senderId)
-        }
-    })
+function Welcome() {
+  const [value, setValue] = useState(moment());
+  const [selectedValue, setSelectedValue] = useState(moment());
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [numericDuration, setNumericDuration] = useState(null);
+  const [currentDuration, setCurrentDuration] = useState(null);
+  const [bookCompleted, setBookCompleted] = useState(false);
+  const uuid = Math.floor(Math.random() * 100);
+  const selectedDay = selectedValue.format('YYYY-MM-DD');
 
-    const notifyByMsg = (day, senderId) => {
-        console.log(senderId, uuid, 'id')
-        if (uuid === senderId) {
-            return;
-        }
+  const onDurationFormSubmit = async (duration) => {
+    const result = await getAvailableSlots({ duration, day: selectedValue });
+    const { data: { slots, durationInMinutes } } = result;
+    setNumericDuration(durationInMinutes);
+    setBookCompleted(false);
+    setTimeSlots(slots);
+  };
 
-        if (day === selectedDay) {
-            onDurationFormSubmit(currentDuration).catch();
-        }
+  const notifyByMsg = (day, senderId) => {
+    if (uuid === senderId) {
+      return;
     }
 
-    const onSelect = (newValue) => {
-        setValue(newValue);
-        setSelectedValue(newValue);
+    if (day === selectedDay) {
+      onDurationFormSubmit(currentDuration).catch();
+    }
+  };
+
+  useEffect(() => {
+    BookingChannel.received = (response) => {
+      const { data: { day, senderId } } = response;
+      notifyByMsg(day, senderId);
     };
+  });
 
-    const onPanelChange = (newValue) => {
-        setValue(newValue);
-    };
+  const onSelect = (newValue) => {
+    setValue(newValue);
+    setSelectedValue(newValue);
+  };
 
-    const onBookSlot = async (item) => {
+  const onPanelChange = (newValue) => {
+    setValue(newValue);
+  };
 
-        await bookSlot({
-            slot: item,
-            day: selectedDay,
-            duration: numericDuration,
-            uuid: uuid,
-        })
+  const onBookSlot = async (item) => {
+    await bookSlot({
+      slot: item,
+      day: selectedDay,
+      duration: numericDuration,
+      uuid,
+    });
 
-        setBookCompleted(true);
+    setBookCompleted(true);
+  };
 
-    }
-
-    const onDurationFormSubmit = async (duration) => {
-        const result = await getAvailableSlots({duration: duration, day: selectedValue});
-        const {data: {slots, durationInMinutes}} = result
-        setNumericDuration(durationInMinutes);
-        setBookCompleted(false);
-        setTimeSlots(slots);
-    }
-
-    return (
-        <Layout>
-            <Header/>
-            <h1> Slot booking </h1>
-            <Content style={{
-                padding: 24,
-                margin: 0,
-                minHeight: 620,
-            }}>
-                <Row style={{width: '90%', margin: 'auto'}}>
-                    <Col span={12}>
-                        <h2>Select a day </h2>
-                        <div>
-                            <Alert message={`You selected date: ${selectedValue?.format('YYYY-MM-DD')}`}/>
-                            <Calendar value={value} onSelect={onSelect} onPanelChange={onPanelChange}
-                                      fullscreen={false}/>
-                        </div>
-                        <h2> Select duration </h2>
-                        <div>
-                            <DurationForm onSubmit={onDurationFormSubmit}
-                                          syncCurrentDuration={(v) => {
-                                              console.log('syncxx', v)
-                                              setCurrentDuration({...currentDuration, ...v})
-                                              console.log('currnt', currentDuration)
-                                          }}/>
-                        </div>
-                    </Col>
-                    <Col span={12}>
-                        <h2> Book your slot </h2>
-                        <SlotBooking bookCompleted={bookCompleted} onBookSlot={onBookSlot} timeSlots={timeSlots}/>
-                    </Col>
-                </Row>
-            </Content>
-            <Footer>
-                @Tradelink test. to see the booked slots go to /debug </Footer>
-        </Layout>);
+  return (
+    <Layout>
+      <Header />
+      <h1> Slot booking </h1>
+      <Content style={{
+        padding: 24,
+        margin: 0,
+        minHeight: 620,
+      }}
+      >
+        <Row style={{ width: '90%', margin: 'auto' }}>
+          <Col span={12}>
+            <h2>Select a day </h2>
+            <div>
+              <Alert message={`You selected date: ${selectedValue?.format('YYYY-MM-DD')}`} />
+              <Calendar
+                value={value}
+                onSelect={onSelect}
+                onPanelChange={onPanelChange}
+                fullscreen={false}
+              />
+            </div>
+            <h2> Select duration </h2>
+            <div>
+              <DurationForm
+                onSubmit={onDurationFormSubmit}
+                syncCurrentDuration={(v) => {
+                  setCurrentDuration({ ...currentDuration, ...v });
+                }}
+              />
+            </div>
+          </Col>
+          <Col span={12}>
+            <h2> Book your slot </h2>
+            <SlotBooking
+              bookCompleted={bookCompleted}
+              onBookSlot={onBookSlot}
+              timeSlots={timeSlots}
+            />
+          </Col>
+        </Row>
+      </Content>
+      <Footer>
+        @Tradelink test. to see the booked slots go to /debug
+        {' '}
+      </Footer>
+    </Layout>
+  );
 }
 
-Welcome.propTypes = {
-  greeting: PropTypes.string
-};
-export default Welcome
+export default Welcome;
