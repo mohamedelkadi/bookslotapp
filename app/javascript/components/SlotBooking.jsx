@@ -1,9 +1,9 @@
 import React from "react"
-import {Button, List} from "antd";
+import {Button, List, Space, Alert} from "antd";
 
 const SlotBooking = ({bookCompleted, timeSlots, onBookSlot}) => (
     <>
-        {bookCompleted ? <h3> Booked successfully </h3> : (
+        {bookCompleted ? <Space> <Alert type="success" message="Booked successfully"/> </Space> : (
             <List dataSource={timeSlots} style={{
                 padding: '5px', height: '460px',
                 overflowY: 'scroll'

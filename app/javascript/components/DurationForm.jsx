@@ -1,26 +1,34 @@
 import React, {useState} from "react"
 import {
-    Input,
     Select,
-    Col,
-    Row,
     Form,
-    Button
+    Typography,
+    Button,
+    Space
 } from 'antd';
 
+const {Text} = Typography;
 const {Option} = Select;
 const HOURS = ['00', '01', '2', '03', '04', '05', '06', '07']
 const MINUTES = ['00', '15', '30', '45']
 
 const DurationForm = ({onSubmit, syncCurrentDuration}) => {
     const [form] = Form.useForm();
-
+    const [error, setError] = useState(null);
 
     return (
         <Form form={form} layout="inline"
               onValuesChange={(values) => syncCurrentDuration(values)}
               onFinish={(values) => {
-                  onSubmit(values)
+                  const {hours, minutes} = values;
+
+                  if ((parseInt(hours) > 0  || parseInt(minutes)) > 0) {
+                      setError(null)
+                      onSubmit(values)
+
+                  } else {
+                      setError("Both hours and minutes can't be zero, please select valid duration")
+                  }
               }}>
 
             <Form.Item name="hours">
@@ -38,6 +46,10 @@ const DurationForm = ({onSubmit, syncCurrentDuration}) => {
             <Button type="primary" htmlType="submit">
                 List available slots
             </Button>
+
+            {error && <Space> <Text type="danger"> {error} </Text> </Space> }
+
+
         </Form>)
 }
 
